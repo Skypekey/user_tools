@@ -2,8 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 """Some checks on files or directories."""
-from os.path import *
-from os import makedirs, listdir
+import os
 import re
 
 
@@ -15,9 +14,9 @@ def is_exist(file_path, create=False):
         If create is True, create a directory named file_path if it does not exist.
     :return(bool): A boolean representing whether file_path exists."""
 
-    if create and not exists(file_path):
-        makedirs(file_path)
-    return exists(file_path)
+    if create and not os.path.exists(file_path):
+        os.makedirs(file_path)
+    return os.path.exists(file_path)
 
 
 def is_not_null(file_path):
@@ -32,9 +31,9 @@ def is_not_null(file_path):
     result = False
     if is_exist(file_path):
         if file_or_dir(file_path) == "file":
-            result = getsize(file_path) != 0
+            result = os.path.getsize(file_path) != 0
         elif file_or_dir(file_path) == "dir":
-            result = bool(listdir(file_path))
+            result = bool(os.listdir(file_path))
     return result
 
 
@@ -49,9 +48,9 @@ def file_or_dir(file_path):
             "": If file_path is not exist or not a dir or file."""
 
     result = ""
-    if isdir(file_path):
+    if os.path.isdir(file_path):
         result = "dir"
-    elif isfile(file_path):
+    elif os.path.isfile(file_path):
         result = "file"
     return result
 

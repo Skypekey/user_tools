@@ -2,9 +2,9 @@
 # -*- coding: UTF-8 -*-
 
 """Some functions related to file operations."""
-from os.path import *
-from user_tools.util_time import format_time
-from user_tools.util_check import *
+import os
+import user_tools.util_time as ut
+import user_tools.util_check as uc
 
 SIZE_UNIT = {
     "GB": float(1024*1024*1024),
@@ -58,8 +58,8 @@ def read_file(file_path, mode="r", encoding="UTF-8"):
             file_path not file; file_path not exist; file_path is null."""
 
     msg = ""
-    expr1 = is_not_null(file_path)
-    expr2 = file_or_dir(file_path) == "file"
+    expr1 = uc.is_not_null(file_path)
+    expr2 = uc.file_or_dir(file_path) == "file"
     if expr1 and expr2:
         if "b" not in mode:
             with open(file_path, mode, encoding=encoding) as f:
@@ -76,7 +76,7 @@ def get_file_suffix(filename):
     :param filename(str): File name to get the suffix.\n
     :return(str): The suffix of filename."""
 
-    return splitext(filename)[1]
+    return os.path.splitext(filename)[1]
 
 
 def get_file_size(file_path, size_unit="MB"):
@@ -97,8 +97,8 @@ def get_file_size(file_path, size_unit="MB"):
     else:
         size_unit = SIZE_UNIT["MB"]
     file_size = -1
-    if is_exist(file_path):
-        tmp_size = getsize(file_path)
+    if uc.is_exist(file_path):
+        tmp_size = os.path.getsize(file_path)
         size = tmp_size / size_unit
         file_size = round(size, 2)
     return file_size
@@ -129,9 +129,9 @@ def get_file_ctime(file_path, format_str='%Y-%m-%d %H:%M:%S'):
         If the creation time is an empty string, the file does not exist."""
 
     ctime = ""
-    if is_exist(file_path):
-        tmp_time = getctime(file_path)
-        ctime = format_time(tmp_time, format_str)
+    if uc.is_exist(file_path):
+        tmp_time = os.path.getctime(file_path)
+        ctime = ut.format_time(tmp_time, format_str)
     return ctime
 
 
@@ -160,9 +160,9 @@ def get_file_atime(file_path, format_str='%Y-%m-%d %H:%M:%S'):
         If the access time is an empty string, the file does not exist."""
 
     atime = ""
-    if is_exist(file_path):
-        tmp_time = getatime(file_path)
-        atime = format_time(tmp_time, format_str)
+    if uc.is_exist(file_path):
+        tmp_time = os.path.getatime(file_path)
+        atime = ut.format_time(tmp_time, format_str)
     return atime
 
 
@@ -191,7 +191,7 @@ def get_file_mtime(file_path, format_str='%Y-%m-%d %H:%M:%S'):
         If the modification time is an empty string, the file does not exist."""
 
     mtime = ""
-    if is_exist(file_path):
-        tmp_time = getmtime(file_path)
-        mtime = format_time(tmp_time, format_str)
+    if uc.is_exist(file_path):
+        tmp_time = os.path.getmtime(file_path)
+        mtime = ut.format_time(tmp_time, format_str)
     return mtime

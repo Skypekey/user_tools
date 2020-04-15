@@ -21,4 +21,4 @@ Some commonly used modules for personal use.
 # changelog
 
 - 2020/03/09 : Initial completion of script writing.
-更新 docstring，添加对参数的说明。util_check.is_not_null() 方法添加对目录的监测。添加 util_check.check_url() 方法，但是因为目前还不熟悉正则，因此暂不完成。
+- 2020/04/15 ：Update the docstring to add a description of the parameters. util_check.is_not_null() method adds monitoring of the directory. The util_check.check_url() method was added, but the git address detection is not yet complete because it is not familiar with the regularity.

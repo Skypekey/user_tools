@@ -4,7 +4,7 @@
 """Some functions related to hash operations."""
 import os
 import hashlib
-from user_tools.util_check import *
+import user_tools.util_check as uc
 
 
 def get_str_md5(string):
@@ -30,8 +30,8 @@ def get_file_md5(file_path):
             file_path not file; file_path not exist; file_path is null."""
 
     md5name = ""
-    expr1 = is_not_null(file_path)
-    expr2 = file_or_dir(file_path) == "file"
+    expr1 = uc.is_not_null(file_path)
+    expr2 = uc.file_or_dir(file_path) == "file"
     if expr1 and expr2:
         with open(file_path, "rb") as f:
             tmp_md5 = hashlib.md5()
