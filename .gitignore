@@ -1,3 +1,6 @@
+# Custom Options
+/user_tools/tmp.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 */__pycache__/

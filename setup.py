@@ -1,28 +1,28 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-from setuptools import setup, find_packages
-from os.path import *
+import setuptools
+import os
 
-here = abspath(dirname(__file__))
+here = os.path.abspath(os.path.dirname(__file__))
 
-readme_file = join(here, 'README.md')
-if exists(readme_file):
+readme_file = os.path.join(here, 'README.md')
+if os.path.exists(readme_file):
     with open(readme_file, encoding='UTF-8') as f:
         long_description = f.read()
 else:
     long_description = "Some commonly used modules for personal use."
 
-require_file = join(here, "requirements.txt")
-if exists(require_file):
+require_file = os.path.join(here, "requirements.txt")
+if os.path.exists(require_file):
     with open(require_file, encoding='UTF-8') as f:
         install_requires = f.read().split("\n")
 else:
     install_requires = []
 
-setup(
+setuptools.setup(
     name='user_tools',
-    version='0.0.6',
+    version='0.0.9',
     description='Some commonly used modules for personal use.',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -41,11 +41,11 @@ setup(
         'Development Status :: 1 - Planning',
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Build Tools',
-        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',
         'Programming Language :: Python :: 3',
     ],
     keywords='time file json',
-    packages=find_packages(),
+    packages=setuptools.find_packages(),
     install_requires=install_requires,
     python_requires='>=3.8',
 
