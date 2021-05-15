@@ -4,7 +4,7 @@
 """Some checks on files or directories."""
 import os
 import re
-from typing import Union
+from typing import Dict, List, Tuple, Union
 from pathlib import Path
 
 
@@ -94,3 +94,22 @@ def check_url(url: str, style: str = "http") -> bool:
             r'^(http(s)?:\/\/([^\/]+?\/){2}|git@[^:]+:[^\/]+?\/).*?.git$', url
         ) else False
     return result
+
+
+def check_arg(expr_list: List, info_dict: Dict, empty_arg: List) -> Tuple:
+    """Check whether the parameters are correct.
+
+    :param expr_list(List): List of parameters to check.
+    :param info_dict(Dict): Information about whether the parameter being checked is correct.
+    :param Empty_arg(List): Optional parameter list.
+
+    :return Tuple(bool, Any): If there is no error, return (True, ""), otherwise False and an error message is returned.
+    """
+    for _ in expr_list:
+        if _ not in info_dict:
+            return (False, f"{' '.join(expr_list)} are all required parameter")
+    for k, v in info_dict.items():
+        if v.strip() == "":
+            if k not in empty_arg:
+                return (False, f"The parameter {k}'value cannot be empty")
+    return (True, "")

@@ -1,9 +1,10 @@
 # user_tools
 
-Some personally used modules. 
-Some modules may be other people's source code, because this tool is mainly convenient for personal use, so there is no processing. 
-If you think it is infringing, please contact me by email or GitHub to delete.
-If I know the source of the code, I will explain it.
+Some personally used modules.
+
+> Some modules may be other people's source code, because this tool is mainly convenient for personal use, so there is no processing.
+> If you think it is infringing, please contact me by email or GitHub to delete.
+> If I know the source of the code, I will explain it.
 
 # install
 
@@ -27,5 +28,6 @@ If I know the source of the code, I will explain it.
 - 2020/03/09 : Initial completion of script writing.
 - 2020/04/15 ：Update the docstring to add a description of the parameters. util_check.is_not_null() method adds monitoring of the directory. The util_check.check_url() method was added, but the git address detection is not yet complete because it is not familiar with the regularity.
 - 2020/04/18 : Fix some bug.
-- 2020/07/18 : Added typing for each file, added util_mysql.py and pyzabbix.py
-- 2021/02/17 : Removed some file, added util_str.py and changed some file
+- 2020/07/18 : Added typing for each file, added util_mysql.py and pyzabbix.py.
+- 2021/02/17 : Removed some file, added util_str.py and changed some file.
+- 2021/02/25 : Fix the bug in util_str.format_str().
