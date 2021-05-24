@@ -52,7 +52,7 @@ def file_or_dir(file_path: Union[str, Path]) -> str:
 
     result = ""
     if not is_exist(file_path):
-        result = file_path + "Not exist!"
+        result = str(file_path) + "Not exist!"
     elif os.path.isdir(file_path):
         result = "dir"
     elif os.path.isfile(file_path):

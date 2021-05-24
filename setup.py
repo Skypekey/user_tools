@@ -22,7 +22,7 @@ else:
 
 setuptools.setup(
     name='user_tools',
-    version='0.0.9',
+    version='0.0.10',
     description='Some commonly used modules for personal use.',
     long_description=long_description,
     long_description_content_type="text/markdown",
