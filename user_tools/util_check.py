@@ -96,7 +96,7 @@ def check_url(url: str, style: str = "http") -> bool:
     return result
 
 
-def check_arg(expr_list: List, info_dict: Dict, empty_arg: List) -> Tuple:
+def check_arg(info_dict: Dict, expr_list: List, empty_arg: List) -> Tuple:
     """Check whether the parameters are correct.
 
     :param expr_list(List): List of parameters to check.
@@ -105,6 +105,15 @@ def check_arg(expr_list: List, info_dict: Dict, empty_arg: List) -> Tuple:
 
     :return Tuple(bool, Any): If there is no error, return (True, ""), otherwise False and an error message is returned.
     """
+    flag = False
+    not_exist = []
+    for i in info_dict.keys():
+        if i not in info_dict and i not in empty_arg:
+            not_exist.append(i)
+            flag = True
+    if flag:
+        return (False, "Please confirm whether the following parameters are correct: " + ",".join(not_exist))
+
     for _ in expr_list:
         if _ not in info_dict:
             return (False, f"{' '.join(expr_list)} are all required parameter")

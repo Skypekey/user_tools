@@ -31,3 +31,4 @@ Some personally used modules.
 - 2020/07/18 : Added typing for each file, added util_mysql.py and pyzabbix.py.
 - 2021/02/17 : Removed some file, added util_str.py and changed some file.
 - 2021/02/25 : Fix the bug in util_str.format_str().
+- 2021/07/12 : Added util_log, Fix the bug in util_check.check_arg().
