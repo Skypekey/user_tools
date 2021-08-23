@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
+# @File    : util_file.py
+# @Time    : 2021-07-23
+# @Author  : Skypekey
+
 
 """Some functions related to file operations."""
 import os
@@ -208,3 +212,7 @@ def get_file_mtime(file_path: Union[str, Path],
         tmp_time = os.path.getmtime(file_path)
         mtime = util_time.format_time(tmp_time, format_str)
     return mtime
+
+
+if __name__ == "__main__":
+    pass

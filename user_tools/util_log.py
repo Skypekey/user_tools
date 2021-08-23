@@ -10,14 +10,14 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 
-def get_logger(log_file):
+def get_logger(log_file, maxBytes=1024 * 1024 * 5):
     logger = logging.getLogger()  # 实例化一个logger对象
     logger.setLevel(logging.INFO)  # 设置初始显示级别
     # 创建一个文件句柄
     file_handle = RotatingFileHandler(filename=log_file,
                                       mode='a', encoding="UTF-8",
                                       backupCount=1,
-                                      maxBytes=1024 * 1024 * 5)
+                                      maxBytes=maxBytes)
     # 创建一个输出格式
     fmt = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s',
                             datefmt='%Y-%m-%d %H:%M:%S')
@@ -27,8 +27,8 @@ def get_logger(log_file):
 
 
 def logger_tuple(func):
-    """用于返回值为(True/False, "输出")的函数打印日志。
-    """
+    """用于返回值为(True/False, "输出")的函数打印日志。"""
+
     @wraps(func)
     def with_logging(*args, **kwargs):
         logger = get_logger(kwargs["log_file"])

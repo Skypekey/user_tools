@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
+# @File    : util_hashlib.py
+# @Time    : 2021-07-23
+# @Author  : Skypekey
+
 
 """Some functions related to hash operations."""
 import hashlib
@@ -74,3 +78,7 @@ def transform_str(tmp_str, key, length):
             code = i + code
             break
     return code
+
+
+if __name__ == "__main__":
+    pass

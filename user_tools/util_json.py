@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# -*- coding: UTF-8 -*-
+# @File    : util_json.py
+# @Time    : 2021-07-23
+# @Author  : Skypekey
+
 
 """Some functions related to json file operations."""
 import json
@@ -50,3 +54,7 @@ def write_json(json_file: Union[str, Path], json_dict: Dict[Any, Any],
         # indent is to format the json file,
         # otherwise it will be displayed on one line.
         json.dump(json_dict, f, ensure_ascii=False, indent=4)
+
+
+if __name__ == "__main__":
+    pass

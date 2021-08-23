@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
+# @File    : util_check.py
+# @Time    : 2021-07-23
+# @Author  : Skypekey
+
 
 """Some checks on files or directories."""
 import os
 import re
 from typing import Dict, List, Tuple, Union
 from pathlib import Path
+import threading
+import socket
 
 
 def is_exist(file_path: Union[str, Path], create: bool = False) -> bool:
@@ -69,7 +75,8 @@ def check_ip(ip: str) -> bool:
     :return(bool): Returns whether url is valid.\n
         Return False, if the IP is not legal."""
 
-    ip_rex = r'(?=(\b|\D))(((\d{1,2})|(1\d{1,2})|(2[0-4]\d)|(25[0-5]))\.){3}((\d{1,2})|(1\d{1,2})|(2[0-4]\d)|(25[0-5]))(?=(\b|\D))'
+    ip_rex = r'(?=(\b|\D))(((\d{1,2})|(1\d{1,2})|(2[0-4]\d)|(25[0-5]))\.)' + \
+        r'{3}((\d{1,2})|(1\d{1,2})|(2[0-4]\d)|(25[0-5]))(?=(\b|\D))'
 
     is_legal = re.match(re.compile(ip_rex), ip)
     if is_legal:
@@ -96,29 +103,91 @@ def check_url(url: str, style: str = "http") -> bool:
     return result
 
 
-def check_arg(info_dict: Dict, expr_list: List, empty_arg: List) -> Tuple:
+def check_arg(info_dict: Dict, required_list: List, empty_arg: List,
+              optional_list: List, method="") -> Tuple:
     """Check whether the parameters are correct.
 
-    :param expr_list(List): List of parameters to check.
-    :param info_dict(Dict): Information about whether the parameter being checked is correct.
-    :param Empty_arg(List): Optional parameter list.
+    :param info_dict(Dict): Information about whether the parameter
+                            being checked is correct.
+    :param required_list(List): List of required parameters.
+    :param optional_list(List): List of Optional parameters.
+    :param empty_arg(List): List of nullable parameters.
+    :param method(str): Method of checking parameters.
+        one: Info_dict must contains at least one parameter from optional_list.
 
-    :return Tuple(bool, Any): If there is no error, return (True, ""), otherwise False and an error message is returned.
-    """
+    :return Tuple(bool, Any): If there is no error, return (True, ""),
+        otherwise False and an error message is returned."""
+
     flag = False
+
+    # Check if parameter in info_dict not exists
+    # in required_list, optional_list and empty_arg.
     not_exist = []
     for i in info_dict.keys():
-        if i not in info_dict and i not in empty_arg:
+        if i not in required_list and i not in optional_list and\
+                i not in empty_arg:
             not_exist.append(i)
             flag = True
     if flag:
-        return (False, "Please confirm whether the following parameters are correct: " + ",".join(not_exist))
+        return (False, "Please confirm whether the following parameters\
+                        are correct: " + ",".join(not_exist))
 
-    for _ in expr_list:
+    # Check if parameter in required_list not exists in info_dict.
+    for _ in required_list:
         if _ not in info_dict:
-            return (False, f"{' '.join(expr_list)} are all required parameter")
+            return (False, f"{' '.join(required_list)} \
+                             are all required parameter")
+
+    # Check if parameter in required_list is not null.
     for k, v in info_dict.items():
-        if v.strip() == "":
-            if k not in empty_arg:
-                return (False, f"The parameter {k}'value cannot be empty")
+        if not v and k not in empty_arg:
+            return (False, f"The parameter {k}'value cannot be empty")
+
+    flag = True
+    if method == "one":
+        for _ in optional_list:
+            if _ in info_dict:
+                flag = False
+        if flag:
+            return (False, f"Info_dict must contains at least one parameter\
+                             from optional_list")
+
+    # Check if the format of parameter in info_dict is correct.
     return (True, "")
+
+
+def check_port(IP, Port, protocol="tcp", timeout=1):
+    """Check whether the Port on IP is open.
+
+    :param IP(str): The IP that needs to be checked.\n
+    :param Port(int): The Port on IP that needs to be checked.\n
+    :param timeout(int): Timeout period.
+
+    :return Tuple(bool, Any): If there is no error, return (True, ""),
+        otherwise False and an error message is returned."""
+
+    threadlock = threading.Lock()
+    flag = False
+    result = ""
+    socket.setdefaulttimeout(timeout)
+    try:
+        if protocol.lower() == "tcp":
+            conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        elif protocol.lower() == "udp":
+            conn = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        else:
+            return (False, "The protocol only can be TCP or UDP")
+        conn.connect((IP, Port))
+        threadlock.acquire()
+        flag = True
+    except Exception as e:
+        threadlock.acquire()
+        result = str(e)
+    finally:
+        threadlock.release()
+        conn.close()
+        return (flag, result)
+
+
+if __name__ == "__main__":
+    pass

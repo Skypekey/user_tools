@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
+# @File    : util_str.py
+# @Time    : 2021-07-23
+# @Author  : Skypekey
+
 
 """Custom str function."""
 
@@ -18,3 +22,7 @@ def format_str(string: str) -> str:
     string = string.replace("&nbsp;", "")
     string = string.strip()
     return string
+
+
+if __name__ == "__main__":
+    pass
