@@ -5,11 +5,5 @@
 # @Author  : Skypekey
 
 
-from common import *
-from exception import *
-from file import *
-from db import *
-
-
 if __name__ == "__main__":
     pass

@@ -9,7 +9,7 @@
 import json
 from typing import Any, Dict, Union
 from pathlib import Path
-from user_tools import util_check
+from common import util_check
 
 
 def read_json(json_file: Union[str, Path]) -> Dict[Any, Any]:

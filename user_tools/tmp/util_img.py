@@ -8,9 +8,7 @@
 """Some functions related to image operations."""
 from pathlib import Path
 from typing import Union
-from user_tools import util_hashlib
-from user_tools import util_check
-from user_tools import util_file
+
 import imghdr
 
 
