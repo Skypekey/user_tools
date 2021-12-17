@@ -5,9 +5,6 @@
 # @Author  : Skypekey
 
 
-#!/usr/bin/env python3
-# -*- coding: UTF-8 -*-
-
 """A custom object for MySQL, to operate the MySQL database."""
 
 import pymysql
@@ -29,7 +26,7 @@ class User_MySQL():
                 info = {
                     # required, where use host to access database.
                     "host": "host",
-                    "username": "user", # required
+                    "user": "user", # required
                     "password": "password", # required
                     "port": 3306, # optional, default is 3306
                     "database": "mysql", # optional
@@ -38,7 +35,7 @@ class User_MySQL():
                 }
         :return Tuple(bool, db_conn|str, db_cur|None): If there is no error, return the database connection handle and cursor handle, otherwise an error message is returned."""
 
-        arg_list = ["host", "username", "password",
+        arg_list = ["host", "user", "password",
                     "port", "database", "socket"]
         connect_info = self.info.copy()
         err_info = ""
@@ -52,8 +49,8 @@ class User_MySQL():
             # err_info = "Only host and socket methods are allowed"
         elif not isinstance(self.info, dict):
             err_info = "info 必须为字典对象"
-        elif "username" not in self.info or not self.info["username"]:
-            err_info = "info 中必须包含 username 且不能为空"
+        elif "user" not in self.info or not self.info["user"]:
+            err_info = "info 中必须包含 user 且不能为空"
         elif "password" not in self.info or not self.info["password"]:
             err_info = "info 中必须包含 password 且不能为空"
         elif "database" not in self.info or not self.info["database"]:
@@ -69,7 +66,7 @@ class User_MySQL():
                 err_info = f"When using {self.method} authentication,\
                              socket is required"
 
-        util_method.return_info(err_info, connect_info)
+        return util_method.return_info(err_info, connect_info)
 
     def __connect(self):
         """Connect to database."""
@@ -88,17 +85,17 @@ class User_MySQL():
         self.db_cur.close()
         self.db_conn.close()
 
-    def __check(self, isquery=True):
+    def __check(self, sql, isquery=True):
         err_info = self.__connect()
         if not err_info:
-            isselect = self.sql.lower().startswith("select")
-            into = "into" in self.sql.lower().spilt(" ")
+            isselect = sql.lower().startswith("select")
+            into = "into" in sql.lower().split(" ")
             if isquery and (not isselect or into):
                 err_info = "Only Select sql statement is supported when use query method."
             elif not isquery and isselect and not into:
                 err_info = "Sql statement must contains into when use noquery method and use select sql statement."
 
-        util_method.return_info(err_info, "")
+        return util_method.return_info(err_info, "")
 
     def Query(self, sql):
         """Query data from the database.
@@ -108,8 +105,8 @@ class User_MySQL():
         err_info = ""
         data = ""
 
-        check_result = self.__check()
-        if not check_result:
+        flag, err_info = self.__check(sql)
+        if flag:
             try:
                 self.db_cur.execute(sql)
                 data = self.db_cur.fetchall()
@@ -117,7 +114,7 @@ class User_MySQL():
                 err_info = f"sql statement is {sql}.\n exception info is:\n{str(e)}"
             finally:
                 self.__close()
-        util_method.return_info(err_info, data)
+        return util_method.return_info(err_info, data)
 
     def NoQuery(self, sql):
         """Change the data in the database.
@@ -127,8 +124,8 @@ class User_MySQL():
         err_info = ""
         data = ""
 
-        check_result = self.__check()
-        if not check_result:
+        flag, err_info = self.__check(sql, False)
+        if flag:
             try:
                 self.db_cur.execute(sql)
                 self.db_conn.commit()
@@ -138,8 +135,7 @@ class User_MySQL():
             finally:
                 self.__close()
 
-        util_method.return_info(err_info, data)
-
+        return util_method.return_info(err_info, data)
 
 if __name__ == "__main__":
     pass
