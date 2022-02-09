@@ -6,6 +6,7 @@
 
 
 """Some functions related to file operations."""
+import datetime
 import os
 from pathlib import Path
 from typing import Any, Union
@@ -212,6 +213,49 @@ def get_file_mtime(file_path: Union[str, Path],
         tmp_time = os.path.getmtime(file_path)
         mtime = util_time.format_time(tmp_time, format_str)
     return mtime
+
+
+def clear_file(logpath: Path, filename, format_str="%Y%m%d",
+               lasttime=7, firsttime=30):
+    """Clean up log files with time format. eg: get_vmax_info_20210204.log
+
+    :param logpath(str): The path where the log file is located.\n
+    :param filename(str): Distinguished name of the log file.\n
+    :param format_str(str): Time format used to format time.\n
+        Default is '%Y-%m-%d %H:%M:%S'.\n
+        Commonly used format codes:\n
+            %Y: Year with century as a decimal number.\n
+            %m: Month as a decimal number [01,12].\n
+            %d: Day of the month as a decimal number [01,31].\n
+            %H: Hour (24-hour clock) as a decimal number [00,23].\n
+            %M: Minute as a decimal number [00,59].\n
+            %S: Second as a decimal number [00,61].\n
+            %z: Time zone offset from UTC.\n
+            %a: Locale's abbreviated weekday name.\n
+            %A: Locale's full weekday name.\n
+            %b: Locale's abbreviated month name.\n
+            %B: Locale's full month name.\n
+            %c: Locale's appropriate date and time representation.\n
+            %I: Hour (12-hour clock) as a decimal number [01,12].\n
+            %p: Locale's equivalent of either AM or PM.\n
+    :param lasttime(int): log file retention time.\n
+    :param firsttime(int): The date of the oldest file to look for.\n
+
+    :return(str): Log file cleanup results.\n
+        Empty string means success, Else failure"""
+
+    error = "日志清理正常"
+    try:
+        for i in range(lasttime, lasttime + firsttime):
+            basetime = datetime.datetime.now() - datetime.timedelta(days=i)
+            ago_day = datetime.datetime.timestamp(basetime)
+            timestr = util_time.format_time(ago_day, format_str=format_str)
+            old_log_file = logpath / f"{filename}_{timestr}.log"
+            if util_check.is_exist(old_log_file):
+                old_log_file.unlink()
+    except Exception as e:
+        error = f"日志清理出错，异常信息为{str(e)}"
+    return error
 
 
 if __name__ == "__main__":

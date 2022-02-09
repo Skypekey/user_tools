@@ -21,7 +21,7 @@ def get_str_md5(string: str) -> str:
         If string is empty, the MD5 value is empty."""
 
     md5name = ""
-    if not string:
+    if string:
         tmp_md5 = hashlib.md5(bytes(string, encoding="UTF-8"))
         md5name = tmp_md5.hexdigest().upper()
     return md5name

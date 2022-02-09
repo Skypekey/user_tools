@@ -12,6 +12,21 @@ from pathlib import Path
 from user_tools.common import util_check
 
 
+def json_list2dict(info, masterid, arglist, argname):
+    newinfo = {}
+    for i in info:
+        if i[masterid] not in newinfo:
+            newinfo[i[masterid]] = {}
+        for arg in arglist:
+            if arg not in newinfo[i[masterid]]:
+                newinfo[i[masterid]][arg] = [i[arg]]
+            else:
+                newinfo[i[masterid]][arg].append(i[arg])
+        for argstr in argname:
+            newinfo[i[masterid]][argstr] = i[argstr]
+    return newinfo
+
+
 def read_json(json_file: Union[str, Path]) -> Dict[Any, Any]:
     """Return the contents of json_file.
 

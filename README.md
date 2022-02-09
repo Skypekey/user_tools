@@ -34,3 +34,4 @@ Some personally used modules.
 - 2021/07/12 : Added util_log, Fix the bug in util_check.check_arg().
 - 2021/08/23 : Added some code in util_check.check_arg().
 - 2021/12/16 : Change all code.
+- 2022/02/09 : Added clear_file() on util_file, added list2json() on util_json, fixed bug in util_hashlib.
