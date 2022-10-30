@@ -5,7 +5,7 @@
 # @Author  : Skypekey
 
 
-def return_info(err_info, data):
+def return_boolinfo(err_info, data):
 
     if err_info:
         return (False, err_info)

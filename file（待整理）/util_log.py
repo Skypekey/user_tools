@@ -8,7 +8,6 @@
 import pathlib
 import logging
 from functools import wraps
-from logging.handlers import RotatingFileHandler
 
 
 class Pylog():
@@ -25,7 +24,7 @@ class Pylog():
 
     def __console(self, message, maxBytes=1024 * 1024 * 5, level=''):
         # 创建一个文件句柄
-        file_handle = RotatingFileHandler(filename=self.log_file,
+        file_handle = logging.handlers.RotatingFileHandler(filename=self.log_file,
                                           mode='a', encoding="UTF-8",
                                           backupCount=1,
                                           maxBytes=maxBytes)

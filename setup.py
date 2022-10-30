@@ -47,7 +47,7 @@ setuptools.setup(
     keywords='time file json',
     packages=setuptools.find_packages(),
     install_requires=install_requires,
-    python_requires='>=3.8',
+    python_requires='>=3.6',
 
     # If some data files are used in the module, and file in module directory.
     # the following options should be used.

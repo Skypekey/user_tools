@@ -6,7 +6,7 @@
 
 
 class ParameterException(Exception):
-    def __init__(self, errinfo) -> None:
+    def __init__(self, errinfo: str) -> None:
         super().__init__()
         self.errinfo = errinfo
 
