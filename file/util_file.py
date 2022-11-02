@@ -9,13 +9,13 @@
 import datetime
 from pathlib import Path
 import pathlib
-from typing import List, Union
+from typing import Any, List, Tuple, Union
 from user_tools.common import util_time
 from user_tools.exception import util_exception
 
 
-def write_file(file_path: Union[str, Path],
-               msg: str, mode: str = "a", encoding: str = "UTF-8") -> None:
+def write_file(file_path: Union[str, Path], msg: str, mode: str = "a",
+               encoding: str = "UTF-8") -> Union[None, str]:
     """Write the contents of msg to file_path.
 
     :param file_path(str): File to be written.\n
@@ -32,49 +32,58 @@ def write_file(file_path: Union[str, Path],
             't'   text mode (default).
             '+'   open a disk file for updating (reading and writing)\n
     :param encoding(str): Encoding format to write file, default is "UTF-8".\n
-    :return(None): No return value."""
 
-    if "b" not in mode:
-        with open(file_path, mode, encoding=encoding) as f:
-            f.write(msg)
-    else:
-        with open(file_path, mode) as f:
-            f.write(msg)
+    :return(None|str): No return value of the error info."""
+
+    try:
+        hp_result = handle_path(file_path, 'c_exist')
+        if hp_result.count(True) != 2:
+            return f'File creation failed: {hp_result[1]}'
+        if "b" not in mode:
+            with open(file_path, mode, encoding=encoding) as f:
+                f.write(msg)
+        else:
+            with open(file_path, mode) as f:
+                f.write(msg)
+    except Exception as e:
+        return f'write_file has an exception: {str(e)}!'
 
 
 def read_file(file_path: Union[str, Path], need_list: bool = False,
-              binary: bool = False, encoding: str = "UTF-8") -> List[bool, Union[List, str]]:
+              binary: bool = False, encoding: str = "UTF-8") -> Tuple(bool, Union[List, str]):
     """Return the content of file_path.
 
     :param file_path(str): File to be read.\n
     :param binary(bool): How to read file, True means return bytes, otherwise return text.
     :param encoding(str): Encoding format to read file, default is "UTF-8".\n
-    :return(list): The result contains two elements.
-        The type of the first element is bool, means success or failure.
-        The type of the second element is a string. The first element is True, means the contents of file_path, otherwise means exception info.
+
+    :return(flag, strings):
+        flag(bool): means success or failure.
+        strings(str): if flag is True, means the contents of file_path, otherwise means exception info.
     """
 
     try:
-        result = [True, ""]
+        msg = ""
         basepath = pathlib.Path(file_path)
         if handle_path(basepath, "type")[1] == "file":
             if binary:
-                result[1] = basepath.read_bytes()
+                msg = basepath.read_bytes()
             else:
-                msg = basepath.read_text(encoding=encoding)
+                tmp_msg = basepath.read_text(encoding=encoding)
                 if need_list:
-                    result[1] = []
-                    for line in msg.split('\n'):
-                        result[1].append(line.strip())
+                    msg = []
+                    for line in tmp_msg.split('\n'):
+                        msg.append(line.strip())
                 else:
-                    result[1] = msg
+                    msg = tmp_msg
         else:
-            raise util_exception.ParameterException(f'Path {file_path} is not a file path!')
+            raise util_exception.ParameterException(f'Path {file_path} is not a file path or some errors has occurred: {handle_path(basepath, "type")[1]}!')
+        return (True, msg)
     except Exception as e:
-        return [False, f'handle_path has an exception: {str(e)}']
+        return (False, f'handle_path has an exception: {str(e)}')
 
 
-def handle_path(path: Union[str, Path], method: str) -> List[bool, Union[str, bool, List, int, float]]:
+def handle_path(path: Union[str, Path], method: str) -> Tuple(bool, Any):
     """Handle path.
 
     :param path(str|Path): The path that needs to be judged.\n
@@ -91,9 +100,9 @@ def handle_path(path: Union[str, Path], method: str) -> List[bool, Union[str, bo
         atime: Return the last access time of path.
         mtime: Return the last modify time of path.
 
-    :return(list): The result contains two elements.
-        The type of the first element is bool, means success or failure.
-        The type of the second element depends on method when the first element is True, otherwise it is a string means exception info.
+    :return(flag, strings):
+        flag(bool): means success or failure.
+        strings(str): if flag is False, means exception info, otherwise depends on method.
         if method is exist, c_exist or null. it's bool.
         if method is suffix or type. it's string.
         if method is size. it's int.
@@ -102,47 +111,46 @@ def handle_path(path: Union[str, Path], method: str) -> List[bool, Union[str, bo
     
     try:
         basepath = pathlib.Path(path)
-        result = [True, ""]
+        result = ""
         is_exist = basepath.exists()
         is_dir = basepath.is_dir()
         is_file = basepath.is_file()
         suffix = basepath.suffixes
 
-
         if method == 'exist':
-            result[1] = is_exist
+            result = is_exist
         elif method == 'c_exist':
             basepath.touch()
-            result[1] = True
+            result = True
         elif method == 'suffix':
-            result[1] = suffix
+            result = suffix
         elif method in ('type', 'null', 'size', 'ctime', 'atime', 'mtime'):
             if is_exist:
                 stat = basepath.stat()
                 if method == 'type':
                     if is_dir:
-                        result[1] = 'dir'
+                        result = 'dir'
                     elif is_file:
-                        result[1] = 'file'
+                        result = 'file'
                     else:
                         raise util_exception.ParameterException(f'Type of {path} is not file or dir!')
                 elif method == 'size':
-                    result[1] = stat.st_size
+                    result = stat.st_size
                 elif method == 'null':
-                    result[1] = True if stat.st_size else False
+                    result = True if stat.st_size else False
                 elif method == 'ctime':
-                    result[1] = stat.st_ctime_ns
+                    result = stat.st_ctime_ns
                 elif method == 'atime':
-                    result[1] = stat.st_atime_ns
+                    result = stat.st_atime_ns
                 elif method == 'mtime':
-                    result[1] = stat.st_mtime_ns
+                    result = stat.st_mtime_ns
             else:
                 raise util_exception.ParameterException(f'Path {path} is not exist!')
         else:
             raise util_exception.ParameterException(f'Method {method} is not exist!')
-        return result
+        return (True, result)
     except Exception as e:
-        return [False, f'handle_path has an exception: {str(e)}']
+        return (False, f'handle_path has an exception: {str(e)}')
 
 
 def clear_file(logpath: Path, filename, format_str="%Y%m%d",

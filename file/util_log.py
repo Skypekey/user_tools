@@ -10,31 +10,37 @@ import logging
 from functools import wraps
 
 
+LEVEL = ["debug", "info", "warning", "warn",
+         "error", "fatal", "critical"]
+
+
 class Pylog():
 
-    def __init__(self, log_file) -> None:
+    def __init__(self, log_file, logger='', datefmt='%Y-%m-%d %H:%M:%S',
+                 logfmt='%(asctime)s [%(levelname)s] %(message)s') -> None:
 
         self.log_file = log_file
         pathlib.Path(self.log_file).parent.mkdir(parents=True,
                                                  exist_ok=True)
-        self.logger = logging.getLogger()  # 实例化一个logger对象
-        self.logger.setLevel(logging.INFO)  # 设置初始显示级别
-        self.fmt = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s',
-                                     datefmt='%Y-%m-%d %H:%M:%S')
+        if logger:
+            self.logger = logging.getLogger(logger)
+        else:
+            self.logger = logging.getLogger()
+        self.logger.setLevel(logging.INFO)
+        self.fmt = logging.Formatter(logfmt, datefmt)
 
-    def __console(self, message, maxBytes=1024 * 1024 * 5, level=''):
-        # 创建一个文件句柄
-        file_handle = logging.handlers.RotatingFileHandler(filename=self.log_file,
-                                          mode='a', encoding="UTF-8",
-                                          backupCount=1,
-                                          maxBytes=maxBytes)
-        # 创建一个输出格式
-        file_handle.setFormatter(self.fmt)  # 文件句柄设置格式
+    def __console(self, message, maxBytes=1024 * 1024 * 5, level='',
+                  encoding="UTF-8", backupCount=1):
+        file_handle = logging.handlers.RotatingFileHandler(
+            filename=self.log_file, mode='a', encoding=encoding,
+            backupCount=backupCount, maxBytes=maxBytes)
+
+        file_handle.setFormatter(self.fmt)
         if(level.lower() == "debug"):
             file_handle.setLevel(logging.DEBUG)
         else:
             file_handle.setLevel(logging.INFO)
-        self.logger.addHandler(file_handle)  # logger对象绑定文件句柄
+        self.logger.addHandler(file_handle)
 
         if level == 'info':
             self.logger.info(message)
@@ -50,7 +56,7 @@ class Pylog():
         file_handle.close()
 
     def logger_tuple(self, func):
-        """用于返回值为(True/False, "输出")的函数打印日志。"""
+        """Used to log for functions with a return value of (True/False, "Output")."""
 
         @wraps(func)
         def with_logging(*args, **kwargs):
@@ -64,10 +70,8 @@ class Pylog():
         return with_logging
 
     def logger_msg(self, level, msg):
-        """直接打印日志"""
+        """Log directly"""
 
-        LEVEL = ["debug", "info", "warning", "warn",
-                 "error", "fatal", "critical"]
         if level not in LEVEL:
             self.__console(f"Level {level} is not correct!", level="error")
         else:

@@ -11,7 +11,8 @@ import platform
 from typing import Any, Dict, List
 
 
-def get_out_text(cmd: List[str], encoding: str = "") -> Dict[str, Any]:
+def get_out_text(cmd: List, filepath: str = "./", shell: bool=False,
+                 encoding: str = "") -> Dict[str, Any]:
     """Run command with arguments and return its output.
 
     :param cmd(list): Command to be executed.\n
@@ -24,7 +25,8 @@ def get_out_text(cmd: List[str], encoding: str = "") -> Dict[str, Any]:
             encoding = "UTF-8"
     code = 0
     try:
-        out_bytes = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+        out_bytes = subprocess.check_output(cmd, stderr=subprocess.STDOUT,
+                                            shell=shell, cwd=filepath)
     except subprocess.CalledProcessError as e:
         out_bytes = e.output
         code = e.returncode

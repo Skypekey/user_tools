@@ -40,5 +40,23 @@ def format_time(timestamp: float = NOW_TIME,
     return time.strftime(format_str, tmp_time)
 
 
+def validate_datetime(date_text, format_str="%Y-%m-%d %H:%M:%S"):
+    """
+    return:
+        格式：(flag, strings)
+        flag:
+            info: 代码执行成功
+            error: 代码执行过程中遇到错误
+            fatal: 代码执行异常。
+        strings: 返回结果说明
+    """
+    try:
+        if date_text != datetime.datetime.strptime(date_text, format_str).strftime(format_str):
+            raise ValueError
+        return True
+    except Exception:
+        return False
+
+
 if __name__ == "__main__":
     pass

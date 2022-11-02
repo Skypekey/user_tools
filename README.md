@@ -35,3 +35,9 @@ Some personally used modules.
 - 2021/08/23 : Added some code in util_check.check_arg().
 - 2021/12/16 : Change all code.
 - 2022/02/09 : Added clear_file() on util_file, added list2json() on util_json, fixed bug in util_hashlib.
+
+# TODO list
+
+- [] Add parameter description for method in util_log.py
+- [] Finish the util_xlsx.py
+- [] Finish the method clear_file in util_file.py, depends on common.util_time.py
