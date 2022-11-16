@@ -2,6 +2,10 @@
 
 Some personally used modules.
 
+> **Note:** 
+> When the version has 'a', it means that is alpha version which can not be used, Because I don't know how to test locally.
+> The package cannot be imported when i installed the package use `python setup.py install`
+> 
 > Some modules may be other people's source code, because this tool is mainly convenient for personal use, so there is no processing.
 > If you think it is infringing, please contact me by email or GitHub to delete.
 > If I know the source of the code, I will explain it.
@@ -38,6 +42,9 @@ Some personally used modules.
 
 # TODO list
 
-- [] Add parameter description for method in util_log.py
-- [] Finish the util_xlsx.py
+- **important**
+    - remove all try catch from file.
+
+- [x] Add parameter description for method in file.util_log.py
+- [] Finish the file.util_xlsx.py
 - [] Finish the method clear_file in util_file.py, depends on common.util_time.py

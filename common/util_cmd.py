@@ -6,18 +6,20 @@
 
 
 """Some functions related to command execution."""
+
 import subprocess
 import platform
 from typing import Any, Dict, List
 
 
-def get_out_text(cmd: List, filepath: str = "./", shell: bool=False,
+def get_out_text(cmd: List, filepath: str = ".", shell: bool=False,
                  encoding: str = "") -> Dict[str, Any]:
     """Run command with arguments and return its output.
 
     :param cmd(list): Command to be executed.\n
         The command format is ["command", ["arg", "arg1",...]]\n
     :return(dict): Command execution results of cmd."""
+
     if not encoding:
         if "win" in platform.system().lower():
             encoding = "gbk"

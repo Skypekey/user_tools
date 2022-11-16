@@ -7,19 +7,14 @@
 
 """A custom object for MySQL, to operate the MySQL database."""
 
+import traceback
 import pymysql
 from user_tools.common import util_method
-from user_tools.exception import util_exception
 
 
 class User_MySQL():
     def __init__(self, info, method="host") -> None:
-        self.info = info
-        self.method = method
-
-    def __verify(self):
-        """Initialize database authentication information.
-
+        """
         :param method(str): Method used for database authentication. Only host and socket.
         :param info(Dict): Database authentication information.\n
             The format of info:\n
@@ -33,7 +28,15 @@ class User_MySQL():
                     # required, where use socket to access database.
                     "socket": "/tmp/mysql.sock"
                 }
-        :return Tuple(bool, db_conn|str, db_cur|None): If there is no error, return the database connection handle and cursor handle, otherwise an error message is returned."""
+        """
+
+        self.info = info
+        self.method = method
+
+    def __verify(self):
+        """Initialize database authentication information.
+
+        :return tuple(bool, db_conn|str, db_cur|None): If there is no error, return the database connection handle and cursor handle, otherwise an error message is returned."""
 
         arg_list = ["host", "user", "password",
                     "port", "database", "socket"]
@@ -42,19 +45,18 @@ class User_MySQL():
 
         for i in self.info.keys():
             if i not in arg_list:
-                err_info = f"非法参数 {i}，只允许以下参数：\n{''.join(arg_list)}"
+                err_info = f"Illegal parameter {i}, only the following parameters are allowed: \n{''.join(arg_list)}"
                 break
         if self.method not in ["host", "socket"]:
-            err_info = "method 只能为 host 或 socket"
-            # err_info = "Only host and socket methods are allowed"
+            err_info = "Only host and socket methods are allowed"
         elif not isinstance(self.info, dict):
-            err_info = "info 必须为字典对象"
+            err_info = "info must be a dict object"
         elif "user" not in self.info or not self.info["user"]:
-            err_info = "info 中必须包含 user 且不能为空"
+            err_info = "info must contain user and cannot be empty"
         elif "password" not in self.info or not self.info["password"]:
-            err_info = "info 中必须包含 password 且不能为空"
+            err_info = "info must contain password and cannot be empty"
         elif "database" not in self.info or not self.info["database"]:
-            err_info = "info 中必须包含 database 且不能为空"
+            err_info = "info must contain database and cannot be empty"
         elif self.method == "host":
             if "host" not in self.info or not self.info["host"]:
                 err_info = f"When using {self.method} authentication,\
@@ -66,7 +68,7 @@ class User_MySQL():
                 err_info = f"When using {self.method} authentication,\
                              socket is required"
 
-        return util_method.return_info(err_info, connect_info)
+        return util_method.return_boolinfo(err_info, connect_info)
 
     def __connect(self):
         """Connect to database."""
@@ -77,9 +79,9 @@ class User_MySQL():
                 self.db_conn = pymysql.connect(**result)
                 self.db_cur = self.db_conn.cursor(pymysql.cursors.DictCursor)
             else:
-                raise util_exception.ParameterException(result)
+                return (flag, result)
         except Exception as e:
-            return f"Database connection error, exception info is:\n{str(e)}"
+            return f"Database connection error, exception info is:\n{traceback.format_exc()}"
 
     def __close(self):
         self.db_cur.close()
@@ -95,7 +97,7 @@ class User_MySQL():
             elif not isquery and isselect and not into:
                 err_info = "Sql statement must contains into when use noquery method and use select sql statement."
 
-        return util_method.return_info(err_info, "")
+        return util_method.return_boolinfo(err_info, "")
 
     def Query(self, sql):
         """Query data from the database.
@@ -111,10 +113,10 @@ class User_MySQL():
                 self.db_cur.execute(sql)
                 data = self.db_cur.fetchall()
             except Exception as e:
-                err_info = f"sql statement is {sql}.\n exception info is:\n{str(e)}"
+                err_info = f"sql statement is {sql}.\n exception info is:\n{traceback.format_exc()}"
             finally:
                 self.__close()
-        return util_method.return_info(err_info, data)
+        return util_method.return_boolinfo(err_info, data)
 
     def NoQuery(self, sql):
         """Change the data in the database.
@@ -131,11 +133,11 @@ class User_MySQL():
                 self.db_conn.commit()
             except Exception as e:
                 self.db_conn.rollback()
-                err_info = f"sql statement is {sql}.\n exception info is:\n{str(e)}"
+                err_info = f"sql statement is {sql}.\n exception info is:\n{traceback.format_exc()}"
             finally:
                 self.__close()
 
-        return util_method.return_info(err_info, data)
+        return util_method.return_boolinfo(err_info, data)
 
 
 if __name__ == "__main__":

@@ -7,12 +7,12 @@
 
 """Custom str function."""
 
-
 def format_str(string: str) -> str:
     r"""Remove all kinds of blanks in the string,
        including full-width blanks and non-breaking blanks.
 
        The list is \r\n, \t, \r, \n, \xa0, \u3000, &nbsp;, [space]"""
+
     string = string.replace("\r\n", "")
     string = string.replace("\t", "")
     string = string.replace("\r", "")

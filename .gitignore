@@ -1,5 +1,5 @@
 # Custom Options
-/user_tools/tmp.py
+tmp/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

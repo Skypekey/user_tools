@@ -4,22 +4,24 @@
 # @Time    : 2022-10-22
 # @Author  : Skypekey
 
+"""Some functions related to csv file operations."""
 
 import csv
+import traceback
 from typing import List, Tuple, Union
 from pathlib import Path
+
 from user_tools.file import util_file
 
 
-def csv2json(filepath: Union[str, Path]) -> Tuple(bool, Union[str, List]):
+def csv2list(filepath: Union[str, Path]) -> Tuple[bool, Union[str, List]]:
     """Convert the contents of the csv file to data in json format.
 
     :param file_path(str): The path of the file which to be read.\n
 
     :return(flag, strings):
         flag(bool): means success or failure.
-        strings(str): if flag is True, means the content of csv is in json mode, otherwise means error or exception info.
-    """
+        strings(str|list): if flag is True, means the content of csv is in json mode, otherwise means error or exception info."""
 
     try:
         csvlist = []
@@ -29,7 +31,7 @@ def csv2json(filepath: Union[str, Path]) -> Tuple(bool, Union[str, List]):
                 csvlist.append(row)
         return (True, csvlist)
     except Exception as e:
-        return (False, f'csv2dict has an exception: {str(e)}!')
+        return (False, f'csv2dict has an exception: {traceback.format_exc()}!')
 
 
 def jsonlist2csv(jsonlist: List, file_path: Union[str, Path], fieldnames: List = [],
@@ -39,7 +41,7 @@ def jsonlist2csv(jsonlist: List, file_path: Union[str, Path], fieldnames: List =
     :param file_path(str): File to be written.\n
     :param jsonlist(list): What will be written to the file_path.\n
     :param encoding(str): Encoding format to write csv file, default is "UTF-8".\n
-    :return(None|str): No return value of the error info."""
+    :return(None|str): No return value or the error info."""
 
     try:
         hp_result = util_file.handle_path(file_path, 'c_exist')
@@ -54,8 +56,9 @@ def jsonlist2csv(jsonlist: List, file_path: Union[str, Path], fieldnames: List =
             writer.writeheader()
             writer.writerows(jsonlist)
     except Exception as e:
-        return f'jsonlist2csv has an exception: {str(e)}!'
+        return f'jsonlist2csv has an exception: {traceback.format_exc()}!'
 
 
 if __name__ == "__main__":
+    print(csv.list_dialects())
     pass

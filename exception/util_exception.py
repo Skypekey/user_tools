@@ -4,6 +4,7 @@
 # @Time    : 2021-12-14
 # @Author  : Skypekey
 
+"""Custom Exception Class"""
 
 class ParameterException(Exception):
     def __init__(self, errinfo: str) -> None:

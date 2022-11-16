@@ -4,13 +4,15 @@
 # @Time    : 2021-07-23
 # @Author  : Skypekey
 
-
 """Some functions related to hash operations."""
+
 import hashlib
 import hmac
 from pathlib import Path
 from typing import Union
+
 from user_tools.common import util_check
+from user_tools.file import util_file
 
 
 def get_str_md5(string: str) -> str:
@@ -36,9 +38,8 @@ def get_file_md5(file_path: Union[str, Path]) -> str:
             file_path not file; file_path not exist; file_path is null."""
 
     md5name = ""
-    expr1 = util_check.is_not_null(file_path)
-    expr2 = util_check.file_or_dir(file_path) == "file"
-    if expr1 and expr2:
+    flag, expr = util_file.handle_path(file_path, 'type')
+    if flag and expr == 'file':
         with open(file_path, "rb") as f:
             tmp_md5 = hashlib.md5()
             while True:
@@ -56,15 +57,17 @@ def transform_str(tmp_str, key, length):
     :param tmp_str(str): The str will be transformed.\n
     :param key(str): The str which used to transform tmp_str.\n
     :param length(int): The length of transformed str.\n
+
     :return(str): The transformed str of a tmp_str"""
-    tmp_str = tmp_str.encode(encoding="utf-8")
-    key = key.encode(encoding="utf-8")
+    
+    tmp_str = tmp_str.encode(encoding="UTF-8")
+    key = key.encode(encoding="UTF-8")
 
     hmd5 = hmac.new(key, tmp_str, hashlib.sha256).hexdigest().encode(
-        encoding="utf-8")
-    rule = list(hmac.new("img".encode(encoding="utf-8"),
+        encoding="UTF-8")
+    rule = list(hmac.new("img".encode(encoding="UTF-8"),
                          hmd5, hashlib.sha256).hexdigest())
-    source = list(hmac.new("tupian".encode(encoding="utf-8"),
+    source = list(hmac.new("tupian".encode(encoding="UTF-8"),
                            hmd5, hashlib.sha256).hexdigest())
 
     for i in range(0, 32):

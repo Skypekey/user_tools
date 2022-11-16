@@ -4,12 +4,14 @@
 # @Time    : 2021-07-23
 # @Author  : Skypekey
 
-
 """Some functions related to file operations."""
+
 import datetime
-from pathlib import Path
 import pathlib
+import traceback
+from pathlib import Path
 from typing import Any, List, Tuple, Union
+
 from user_tools.common import util_time
 from user_tools.exception import util_exception
 
@@ -33,7 +35,7 @@ def write_file(file_path: Union[str, Path], msg: str, mode: str = "a",
             '+'   open a disk file for updating (reading and writing)\n
     :param encoding(str): Encoding format to write file, default is "UTF-8".\n
 
-    :return(None|str): No return value of the error info."""
+    :return(None|str): No return value or the error info."""
 
     try:
         hp_result = handle_path(file_path, 'c_exist')
@@ -46,11 +48,11 @@ def write_file(file_path: Union[str, Path], msg: str, mode: str = "a",
             with open(file_path, mode) as f:
                 f.write(msg)
     except Exception as e:
-        return f'write_file has an exception: {str(e)}!'
+        return f'write_file has an exception: {traceback.format_exc()}!'
 
 
 def read_file(file_path: Union[str, Path], need_list: bool = False,
-              binary: bool = False, encoding: str = "UTF-8") -> Tuple(bool, Union[List, str]):
+              binary: bool = False, encoding: str = "UTF-8") -> Tuple[bool, Union[List, str]]:
     """Return the content of file_path.
 
     :param file_path(str): File to be read.\n
@@ -59,8 +61,7 @@ def read_file(file_path: Union[str, Path], need_list: bool = False,
 
     :return(flag, strings):
         flag(bool): means success or failure.
-        strings(str): if flag is True, means the contents of file_path, otherwise means exception info.
-    """
+        strings(str): if flag is True, means the contents of file_path, otherwise means exception info."""
 
     try:
         msg = ""
@@ -80,10 +81,10 @@ def read_file(file_path: Union[str, Path], need_list: bool = False,
             raise util_exception.ParameterException(f'Path {file_path} is not a file path or some errors has occurred: {handle_path(basepath, "type")[1]}!')
         return (True, msg)
     except Exception as e:
-        return (False, f'handle_path has an exception: {str(e)}')
+        return (False, f'read_file has an exception: {traceback.format_exc()}')
 
 
-def handle_path(path: Union[str, Path], method: str) -> Tuple(bool, Any):
+def handle_path(path: Union[str, Path], method: str) -> Tuple[bool, Any]:
     """Handle path.
 
     :param path(str|Path): The path that needs to be judged.\n
@@ -106,8 +107,7 @@ def handle_path(path: Union[str, Path], method: str) -> Tuple(bool, Any):
         if method is exist, c_exist or null. it's bool.
         if method is suffix or type. it's string.
         if method is size. it's int.
-        if method is ctime, atime or mtime. it's float
-    """
+        if method is ctime, atime or mtime. it's float"""
     
     try:
         basepath = pathlib.Path(path)
@@ -150,7 +150,7 @@ def handle_path(path: Union[str, Path], method: str) -> Tuple(bool, Any):
             raise util_exception.ParameterException(f'Method {method} is not exist!')
         return (True, result)
     except Exception as e:
-        return (False, f'handle_path has an exception: {str(e)}')
+        return (False, f'handle_path has an exception: {traceback.format_exc()}')
 
 
 def clear_file(logpath: Path, filename, format_str="%Y%m%d",
@@ -192,7 +192,7 @@ def clear_file(logpath: Path, filename, format_str="%Y%m%d",
             if handle_path(old_log_file, 'exist').count(True) == 2:
                 old_log_file.unlink()
     except Exception as e:
-        error = f"日志清理出错，异常信息为{str(e)}"
+        error = f"日志清理出错，异常信息为{traceback.format_exc()}"
     return error
 
 

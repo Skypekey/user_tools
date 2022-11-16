@@ -22,7 +22,7 @@ else:
 
 setuptools.setup(
     name='user_tools',
-    version='1.0.2',
+    version='1.0.2a',
     description='Some commonly used modules for personal use.',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -47,7 +47,7 @@ setuptools.setup(
     keywords='time file json',
     packages=setuptools.find_packages(),
     install_requires=install_requires,
-    python_requires='>=3.6',
+    python_requires='>=3.7',
 
     # If some data files are used in the module, and file in module directory.
     # the following options should be used.

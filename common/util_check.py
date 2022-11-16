@@ -8,10 +8,11 @@
 """Some checks on files or directories."""
 
 import re
-from typing import Dict, List, Tuple, Union
-import threading
 import socket
-from user_tools.exception import util_exception
+import traceback
+import threading
+
+from typing import Any, Tuple
 
 
 def check_ip(ip: str) -> bool:
@@ -49,39 +50,14 @@ def check_url(url: str, style: str = "http") -> bool:
     return result
 
 
-def check_arg(arg_list: List, arg_format_dict: Dict) -> Tuple(bool, Union[bool, str]):
-    """Check whether the parameters are correct.
-
-    :param arg_list(List): List of parameters.
-    :param arg_format_dict(Dict): 
-        Format for each parameter.
-        The key of the dict is the parameter name.
-        The value is also a dict. It has three key: exist, type, isnull, format.
-            The exist is a bool, means whether the parameter is required. default is True.
-            The type is a str, means the type of parameter. Depends on the official standard of Python.
-            The isnull is a bool, means whether the parameter can be null.
-            The value type of format is depends on the type. The format can be None, means no format check.
-                for str, it is a dict, it has two key: start, end
-                for bool, it is None or an empty string.
-                for dict, it is a dict, it has two key: arg_list, arg_format_dict. means judge again by this method.
-                for float or int, it is a dict, it has three key: min, max, decimal(means number of decimal places)
-
-    :return Tuple(bool, Any): 
-        If there is no error, return (True, True),
-        otherwise False and an error message is returned.
-    """
-
-    try
-
-
-def check_port(IP, Port, protocol="tcp", timeout=1):
+def check_port(IP, Port, protocol="tcp", timeout=1) -> Tuple[bool, Any]:
     """Check whether the Port on IP is open.
 
     :param IP(str): The IP that needs to be checked.\n
     :param Port(int): The Port on IP that needs to be checked.\n
     :param timeout(int): Timeout period.
 
-    :return Tuple(bool, Any): If there is no error, return (True, ""),
+    :return Tuple[bool, Any]: If there is no error, return (True, ""),
         otherwise False and an error message is returned."""
 
     threadlock = threading.Lock()
@@ -100,7 +76,7 @@ def check_port(IP, Port, protocol="tcp", timeout=1):
         flag = True
     except Exception as e:
         threadlock.acquire()
-        result = str(e)
+        result = traceback.format_exc()
     finally:
         threadlock.release()
         conn.close()
