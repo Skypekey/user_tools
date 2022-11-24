@@ -4,82 +4,90 @@
 # @Time    : 2021-07-23
 # @Author  : Skypekey
 
-"""Some checks on files or directories."""
+"""Some check method."""
 
-import re
-import socket
 import traceback
-import threading
+from typing import Any, Union, List, Dict
 
-from typing import Any, Tuple
-
-
-def check_ip(ip: str) -> bool:
-    """Test whether the IP is valid.
-
-    :param ip(str): The IP that needs to be judged.\n
-    :return(bool): Returns whether url is valid.\n
-        Return False, if the IP is not legal."""
-
-    ip_rex = r'(?=(\b|\D))(((\d{1,2})|(1\d{1,2})|(2[0-4]\d)|(25[0-5]))\.)' + \
-        r'{3}((\d{1,2})|(1\d{1,2})|(2[0-4]\d)|(25[0-5]))(?=(\b|\D))'
-
-    is_legal = re.match(re.compile(ip_rex), ip)
-    if is_legal:
-        return True
-    else:
-        return False
+from user_tools.exception import util_exception
 
 
-def check_url(url: str, style: str = "http") -> bool:
-    """Test whether url is valid.
+def check_arg(arg: Any, arg_type: str, arg_format: Union[Dict, List] = [],
+              type: str = "") -> Union[bool, str]:
+    """Check whether the parameters are correct.
 
-    :params url(str): The url that needs to be judged.\n
-    :return(bool): Returns whether url is valid.\n
-        Return False, if the style is not web or git.
+    :param arg(Any): The parameter.
+    :param arg_format(Dict|list): 
+        Format for each parameter.
+        The key of the dict is the parameter name.
+        The value is a dict or a list. 
+            When only the verification type is required, it's a list, otherwise it's dict.
+            For dict, it has three key: type, exist, isnull, format.
+                The type is a str, means the type of parameter. Depends on the official standard of Python.
+                The exist is a bool, means whether the parameter is required. default is True.
+                The isnull is a bool, means whether the parameter can be null, default is False.
+                The value type of format is depends on the type. Default is None, means no format check.
+                    for str, it is a dict, it has two key: start, end
+                    for bool, it is None or an empty string.
+                    for dict, it is a dict, it has two key: arg_list, arg_format. means judge again by this method.
+                    for float or int, it is a dict, it has three key: min, max, decimal(means number of decimal places)
+    :param type(str): When the types are consistent, use this parameter.
+
+    :return(bool|str): The result of check or the error info.
     """
 
-    result = False
-    if style == "http":
-        result = True if re.match(r'^https?:/{2}\w.+$', url) else False
-    elif style == "git":
-        result = True if re.match(
-            r'^(http(s)?:\/\/([^\/]+?\/){2}|git@[^:]+:[^\/]+?\/).*?.git$', url
-        ) else False
-    return result
-
-
-def check_port(IP, Port, protocol="tcp", timeout=1) -> Tuple[bool, Any]:
-    """Check whether the Port on IP is open.
-
-    :param IP(str): The IP that needs to be checked.\n
-    :param Port(int): The Port on IP that needs to be checked.\n
-    :param timeout(int): Timeout period.
-
-    :return Tuple[bool, Any]: If there is no error, return (True, ""),
-        otherwise False and an error message is returned."""
-
-    threadlock = threading.Lock()
-    flag = False
-    result = ""
-    socket.setdefaulttimeout(timeout)
     try:
-        if protocol.lower() == "tcp":
-            conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        elif protocol.lower() == "udp":
-            conn = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        def check_type(ct_str, ct_type):
+            if ct_type == 'int':
+                ct_type = int
+            elif ct_type == 'float':
+                ct_type = float
+            elif ct_type == 'bool':
+                ct_type = bool
+            elif ct_type == 'complex':
+                ct_type = complex
+            elif ct_type == 'str':
+                ct_type = str
+            elif ct_type == 'list':
+                ct_type = list
+            elif ct_type == 'tuple':
+                ct_type = tuple
+            elif ct_type == 'set':
+                ct_type = set
+            elif ct_type == 'dict':
+                ct_type = dict
+            else:
+                raise util_exception.ParameterException(f'{ct_type} is not a standard data type!')
+            
+            if isinstance(ct_str, ct_type):
+                return True
+            else:
+                return False
+
+        def check_null(ct_str, ct_type):
+            checknum = ct_type not in ("int", "float", "bool", "complex")
+            if checknum and not ct_str:
+                return False
+            else:
+                return True
+
+        if arg_format == []:
+            if check_type(arg, arg_type) and check_null(arg, arg_type):
+                return True
+            else:
+                return False
+        elif arg_type != 'dict':
+            raise util_exception.ParameterException('arg only supports str, list, dict!')
+
+        if check_type(arg, 'str'):
+            pass
+        elif check_type(arg, 'list'):
+            pass
         else:
-            return (False, "The protocol only can be TCP or UDP")
-        conn.connect((IP, Port))
-        threadlock.acquire()
-        flag = True
+            pass
+
     except Exception as e:
-        threadlock.acquire()
-        result = traceback.format_exc().strip()
-    finally:
-        threadlock.release()
-        conn.close()
-        return (flag, result)
+        return f'check_arg has an exception: {traceback.format_exc().strip()}!'
 
 
 if __name__ == "__main__":
