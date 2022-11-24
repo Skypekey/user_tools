@@ -3,9 +3,9 @@
 Some personally used modules.
 
 > **Note:** 
-> When the version has 'a', it means that is alpha version which can not be used, Because I don't know how to test locally.
+> When the version like 'x.x.x.x', it means that is alpha version which can not be used, Because I don't know how to test locally.
 > The package cannot be imported when i installed the package use `python setup.py install`
-> 
+>
 > Some modules may be other people's source code, because this tool is mainly convenient for personal use, so there is no processing.
 > If you think it is infringing, please contact me by email or GitHub to delete.
 > If I know the source of the code, I will explain it.

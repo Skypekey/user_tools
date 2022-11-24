@@ -4,7 +4,6 @@
 # @Time    : 2021-07-23
 # @Author  : Skypekey
 
-
 """Some checks on files or directories."""
 
 import re
