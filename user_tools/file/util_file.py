@@ -120,7 +120,8 @@ def handle_path(path: Union[str, Path], method: str) -> Tuple[bool, Any]:
         if method == 'exist':
             result = is_exist
         elif method == 'c_exist':
-            basepath.touch()
+            if not is_exist:
+                basepath.touch()
             result = True
         elif method == 'suffix':
             result = suffix
