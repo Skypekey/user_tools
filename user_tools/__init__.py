@@ -4,7 +4,7 @@
 # @Time    : 2021-12-16
 # @Author  : Skypekey
 
-VERSION = '1.0.2'
+VERSION = '1.0.3'
 
 if __name__ == "__main__":
     pass
