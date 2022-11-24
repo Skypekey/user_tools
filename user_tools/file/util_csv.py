@@ -31,15 +31,15 @@ def csv2list(filepath: Union[str, Path]) -> Tuple[bool, Union[str, List]]:
                 csvlist.append(row)
         return (True, csvlist)
     except Exception as e:
-        return (False, f'csv2dict has an exception: {traceback.format_exc()}!')
+        return (False, f'csv2list has an exception: {traceback.format_exc().strip()}!')
 
 
-def jsonlist2csv(jsonlist: List, file_path: Union[str, Path], fieldnames: List = [],
+def list2csv(listinfo: List, file_path: Union[str, Path], fieldnames: List = [],
                  encoding: str = "UTF-8") -> Union[None, str]:
-    """Write the contents of jsonlist to file_path.
+    """Write the contents of listinfo to file_path.
 
     :param file_path(str): File to be written.\n
-    :param jsonlist(list): What will be written to the file_path.\n
+    :param listinfo(list): What will be written to the file_path.\n
     :param encoding(str): Encoding format to write csv file, default is "UTF-8".\n
     :return(None|str): No return value or the error info."""
 
@@ -47,16 +47,19 @@ def jsonlist2csv(jsonlist: List, file_path: Union[str, Path], fieldnames: List =
         hp_result = util_file.handle_path(file_path, 'c_exist')
         if hp_result.count(True) != 2:
             return f'File creation failed: {hp_result[1]}!'
-        if jsonlist == [] and fieldnames == []:
-            return 'Both jsonlist and fieldnames are empty!'
+        if listinfo == [] and fieldnames == []:
+            return 'Both listinfo and fieldnames are empty!'
+        
+        if listinfo != []:
+            fieldnames = fieldnames if fieldnames != [] and fieldnames == listinfo[0].keys() else listinfo[0].keys()
 
         with open(file_path, 'w', newline='', encoding=encoding) as csvfile:
-            fieldnames = fieldnames if fieldnames != [] else jsonlist[0].keys()
+            
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-            writer.writerows(jsonlist)
+            writer.writerows(listinfo)
     except Exception as e:
-        return f'jsonlist2csv has an exception: {traceback.format_exc()}!'
+        return f'list2csv has an exception: {traceback.format_exc().strip()}!'
 
 
 if __name__ == "__main__":

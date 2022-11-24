@@ -75,7 +75,7 @@ def check_port(IP, Port, protocol="tcp", timeout=1) -> Tuple[bool, Any]:
         flag = True
     except Exception as e:
         threadlock.acquire()
-        result = traceback.format_exc()
+        result = traceback.format_exc().strip()
     finally:
         threadlock.release()
         conn.close()

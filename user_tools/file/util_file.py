@@ -48,7 +48,7 @@ def write_file(file_path: Union[str, Path], msg: str, mode: str = "a",
             with open(file_path, mode) as f:
                 f.write(msg)
     except Exception as e:
-        return f'write_file has an exception: {traceback.format_exc()}!'
+        return f'write_file has an exception: {traceback.format_exc().strip()}!'
 
 
 def read_file(file_path: Union[str, Path], need_list: bool = False,
@@ -81,7 +81,7 @@ def read_file(file_path: Union[str, Path], need_list: bool = False,
             raise util_exception.ParameterException(f'Path {file_path} is not a file path or some errors has occurred: {handle_path(basepath, "type")[1]}!')
         return (True, msg)
     except Exception as e:
-        return (False, f'read_file has an exception: {traceback.format_exc()}')
+        return (False, f'read_file has an exception: {traceback.format_exc().strip()}')
 
 
 def handle_path(path: Union[str, Path], method: str) -> Tuple[bool, Any]:
@@ -150,7 +150,7 @@ def handle_path(path: Union[str, Path], method: str) -> Tuple[bool, Any]:
             raise util_exception.ParameterException(f'Method {method} is not exist!')
         return (True, result)
     except Exception as e:
-        return (False, f'handle_path has an exception: {traceback.format_exc()}')
+        return (False, f'handle_path has an exception: {traceback.format_exc().strip()}')
 
 
 def clear_file(logpath: Path, filename, format_str="%Y%m%d",
@@ -192,7 +192,7 @@ def clear_file(logpath: Path, filename, format_str="%Y%m%d",
             if handle_path(old_log_file, 'exist').count(True) == 2:
                 old_log_file.unlink()
     except Exception as e:
-        error = f"日志清理出错，异常信息为{traceback.format_exc()}"
+        error = f"日志清理出错，异常信息为{traceback.format_exc().strip()}"
     return error
 
 

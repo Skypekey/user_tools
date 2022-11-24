@@ -32,7 +32,7 @@ def read_json(json_file: Union[str, Path]) -> Tuple[bool, Union[str, Dict]]:
             json_dict = json.load(f)
         return (True, json_dict)
     except Exception as e:
-        return (False, f'read_json has an exception: {traceback.format_exc()}!')
+        return (False, f'read_json has an exception: {traceback.format_exc().strip()}!')
 
 
 def write_json(json_file: Union[str, Path], json_dict: Dict[Any, Any]) -> Union[None, str]:
@@ -51,7 +51,7 @@ def write_json(json_file: Union[str, Path], json_dict: Dict[Any, Any]) -> Union[
             # otherwise it will be displayed on one line.
             json.dump(json_dict, f, ensure_ascii=False, indent=4)
     except Exception as e:
-        return f'write_json has an exception: {traceback.format_exc()}!'
+        return f'write_json has an exception: {traceback.format_exc().strip()}!'
 
 
 if __name__ == "__main__":

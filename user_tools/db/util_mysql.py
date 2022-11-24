@@ -81,7 +81,7 @@ class User_MySQL():
             else:
                 return (flag, result)
         except Exception as e:
-            return f"Database connection error, exception info is:\n{traceback.format_exc()}"
+            return f"Database connection error, exception info is:\n{traceback.format_exc().strip()}"
 
     def __close(self):
         self.db_cur.close()
@@ -113,7 +113,7 @@ class User_MySQL():
                 self.db_cur.execute(sql)
                 data = self.db_cur.fetchall()
             except Exception as e:
-                err_info = f"sql statement is {sql}.\n exception info is:\n{traceback.format_exc()}"
+                err_info = f"sql statement is {sql}.\n exception info is:\n{traceback.format_exc().strip()}"
             finally:
                 self.__close()
         return util_method.return_boolinfo(err_info, data)
@@ -133,7 +133,7 @@ class User_MySQL():
                 self.db_conn.commit()
             except Exception as e:
                 self.db_conn.rollback()
-                err_info = f"sql statement is {sql}.\n exception info is:\n{traceback.format_exc()}"
+                err_info = f"sql statement is {sql}.\n exception info is:\n{traceback.format_exc().strip()}"
             finally:
                 self.__close()
 

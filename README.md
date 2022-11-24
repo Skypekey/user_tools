@@ -44,6 +44,6 @@ Some personally used modules.
 
 - [x] Add parameter description for method in file.util_log.py
 
-- [] Finish the file.util_xlsx.py
+- Finish the file.util_xlsx.py
 
-- [] Finish the method clear_file in util_file.py, depends on common.util_time.py
+- Finish the method clear_file in util_file.py, depends on common.util_time.py
